@@ -12,8 +12,8 @@ class Server
     until request_controller.close_server
     end
   end
-tcp_server = TCPServer.new(9292)
-cycles = 0
+
+
 loop do
   puts cycles
   client = tcp_server.accept
