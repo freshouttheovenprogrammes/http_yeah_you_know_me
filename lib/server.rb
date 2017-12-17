@@ -1,4 +1,5 @@
 require 'socket'
+require_relative 'request_controller'
 
 class Server
   attr_reader
@@ -7,10 +8,9 @@ class Server
     @request_controller = RequestController.new
   end
 
-
   def connect
     until request_controller.close_server
-
+    end
   end
 tcp_server = TCPServer.new(9292)
 cycles = 0
