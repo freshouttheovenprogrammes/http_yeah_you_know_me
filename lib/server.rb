@@ -13,7 +13,7 @@ class Server
     end
   end
 
-
+=begin
 loop do
   puts cycles
   client = tcp_server.accept
@@ -50,4 +50,5 @@ loop do
   puts "\nResponse complete, exiting."
   # client.close
   end
+=end
 end
