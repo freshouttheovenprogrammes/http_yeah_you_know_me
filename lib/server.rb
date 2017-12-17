@@ -1,11 +1,15 @@
 require 'socket'
 require_relative 'request_controller'
+require_relative 'headers'
 
 class Server
-  attr_reader
+  attr_reader :request_controller,
+              :headers
 
   def initialize
     @request_controller = RequestController.new
+    @headers            = Headers.new
+    connect
   end
 
   def connect
@@ -15,8 +19,8 @@ class Server
 
 =begin
 loop do
-  puts cycles
-  client = tcp_server.accept
+  puts cycles # was a variable now moved to request_controller
+  client = tcp_server.accept # stored in the open_server method on request_controller
   puts "Ready for a request"
   request_lines = []
   while line = client.gets and !line.chomp.empty?
