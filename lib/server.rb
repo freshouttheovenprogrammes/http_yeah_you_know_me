@@ -1,10 +1,8 @@
 require 'socket'
 require_relative 'request_controller'
-require_relative 'headers'
 
 class Server
-  attr_reader :request_controller,
-              :headers
+  attr_reader :request_controller
 
   def initialize
     @request_controller = RequestController.new
