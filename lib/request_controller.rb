@@ -23,17 +23,19 @@ class RequestController
     end
     pre = "<pre>"
     pre_close = "</pre>"
-    verb, comma, protocol = @request_lines[0].split(" ")
+    verb, path, protocol = @request_lines[0].split(" ")
     host, ip, port = @request_lines[1].split(":")
+    accept = @request_lines[6]
     response = "#{pre}
     Verb: #{verb}
-    Path: #{comma}
+    Path: #{path}
     Protocol: #{protocol}
-    Host: #{host}
+    #{host} #{ip}
     Port: #{port}
+    Origin: #{ip}
+    #{accept}
     #{pre_close}"
-    response_2 = pre + " IP: " + ip + " Port: " + port + pre_close
-    output = "<html><head></head><body>#{response}#{response_2}</body></html>"
+    output = "<html><head></head><body>#{response}</body></html>"
     text.headers(output)
     text.got_request
     text.ready_request
