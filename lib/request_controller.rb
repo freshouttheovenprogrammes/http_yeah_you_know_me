@@ -5,7 +5,8 @@ class RequestController
               :text,
               :cycles,
               :close_server,
-              :request_lines
+              :request_lines,
+              :client
 
   def initialize
     @server        = TCPServer.new(9292)
@@ -13,6 +14,7 @@ class RequestController
     @cycles        = 0
     @close_server  = false
     @request_lines = []
+    @client        = server.accept
   end
 
   def diagnostics
@@ -21,7 +23,6 @@ class RequestController
 
   def open_server
     loop do
-    @client = server.accept
     while line = @client.gets and !line.chomp.empty?
       request_lines << line.chomp
     end
@@ -47,33 +48,33 @@ class RequestController
     @client.puts output # this is needed...why?
     puts "Sending response."
       @cycles += 1
-      @client.close
     end
+    @client.close
   end
-
-  def root
-    if something == "/"
-      do a thing
-    end
-  end
-
-  def root
-    if something == "/"
-      do a thing
-    end
-  end
-
-  def root
-    if something == "/"
-      do a thing
-    end
-  end
-
-  def root
-    if something == "/"
-      do a thing
-    end
-  end
+  #
+  # def root
+  #   if something == "/"
+  #     do a thing
+  #   end
+  # end
+  #
+  # def root
+  #   if something == "/"
+  #     do a thing
+  #   end
+  # end
+  #
+  # def root
+  #   if something == "/"
+  #     do a thing
+  #   end
+  # end
+  #
+  # def root
+  #   if something == "/"
+  #     do a thing
+  #   end
+  # end
   #
   # def formatter(lines)
   #   lines.map do |line|
