@@ -17,8 +17,9 @@ class RequestController
     @client        = server.accept
   end
 
-  def diagnostics
-
+  def time
+    time = Time.now.strftime('%a, %e %b %Y %H:%M:%S %z').delete(",").split(" ")
+    puts "#{time[4]}" + " on " "#{time[0]}" + "day " + "#{time[2]}" + "ember " + "#{time[1]} " + "#{time[3]}"
   end
 
   def open_server
@@ -45,7 +46,8 @@ class RequestController
       elsif path == "/hello"
         output = "<html><head></head><body>Hello World(#{cycles})</body></html>"
       elsif path == "/datetime"
-        output = "<html><head></head><body>#{time_shit}</body></html>"
+        require "pry"; binding.pry
+        output = "<html><head></head><body>#{time}</body></html>"
       end
     text.headers(output)
     text.got_request
@@ -54,7 +56,6 @@ class RequestController
     @client.puts output # this is needed...why?
     puts "Sending response."
       @cycles += 1
-      # @client.close
     end
   end
   #
