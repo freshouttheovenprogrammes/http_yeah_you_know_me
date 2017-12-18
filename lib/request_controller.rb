@@ -8,7 +8,7 @@ class RequestController
 
   def initialize
     @tcp_server   = TCPServer.new(9292)
-    @text      = Text.new
+    @text         = Text.new
     @cycles       = 0
     @close_server = false
   end
@@ -19,13 +19,13 @@ class RequestController
     loop do
     @client = tcp_server.accept
     pre = "<pre>"
+    text.headers
     text.got_request
     request_lines = []
       while line = @client.gets and !line.chomp.empty?
         request_lines << line.chomp
       end
     text.ready_request
-    puts request_lines.inspect
     verb, path, protocol = request_lines.first.split(" ")
     response = (puts pre + "Verb:" + verb
     puts "Path:" + path
