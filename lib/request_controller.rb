@@ -40,7 +40,13 @@ class RequestController
     Origin: #{ip}
     #{accept}
     #{pre_close}"
-    output = "<html><head></head><body>#{response}</body></html>"
+      if path == ""
+        output = "<html><head></head><body>#{response}</body></html>"
+      elsif path == "/hello"
+        output = "<html><head></head><body>Hello World(#{cycles})</body></html>"
+      elsif path == "/datetime"
+        output = "<html><head></head><body>#{time_shit}</body></html>"
+      end
     text.headers(output)
     text.got_request
     text.ready_request
@@ -48,8 +54,8 @@ class RequestController
     @client.puts output # this is needed...why?
     puts "Sending response."
       @cycles += 1
+      # @client.close
     end
-    @client.close
   end
   #
   # def root
