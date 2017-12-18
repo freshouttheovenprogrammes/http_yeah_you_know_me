@@ -4,33 +4,37 @@ class RequestController
   attr_reader :server,
               :text,
               :cycles,
-              :close_server
+              :close_server,
+              :request_lines
 
   def initialize
-    @server       = TCPServer.new(9292)
-    @text         = Text.new
-    @cycles       = 0
-    @close_server = false
+    @server        = TCPServer.new(9292)
+    @text          = Text.new
+    @cycles        = 0
+    @close_server  = false
+    @request_lines = []
   end
 
+  def diagnostics
+
+  end
 
   def open_server
     loop do
     @client = server.accept
-    @request_lines = []
     while line = @client.gets and !line.chomp.empty?
-      @request_lines << line.chomp
+      request_lines << line.chomp
     end
     pre = "<pre>"
     pre_close = "</pre>"
-    verb, path, protocol = @request_lines[0].split(" ")
-    host, ip, port = @request_lines[1].split(":")
-    accept = @request_lines[6]
+    verb, path, protocol = request_lines[0].split(" ")
+    host, ip, port = request_lines[1].split(":")
+    accept = request_lines[6]
     response = "#{pre}
     Verb: #{verb}
     Path: #{path}
     Protocol: #{protocol}
-    #{host} #{ip}
+    #{host}: #{ip}
     Port: #{port}
     Origin: #{ip}
     #{accept}
@@ -44,6 +48,30 @@ class RequestController
     puts "Sending response."
       @cycles += 1
       @client.close
+    end
+  end
+
+  def root
+    if something == "/"
+      do a thing
+    end
+  end
+
+  def root
+    if something == "/"
+      do a thing
+    end
+  end
+
+  def root
+    if something == "/"
+      do a thing
+    end
+  end
+
+  def root
+    if something == "/"
+      do a thing
     end
   end
   #
