@@ -8,7 +8,6 @@ class Server
 
   def initialize
     @request_controller = RequestController.new
-    @headers            = Headers.new
     connect
   end
 

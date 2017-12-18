@@ -19,7 +19,12 @@ class RequestController
       end
     puts "Got this request:"
     puts request_lines.inspect
-    output  = "<html><head></head><body>Hello World(#{cycles})</body></html>"
+    pre = "<pre>"
+    verb, path, protocol = request_lines.first.split(" ")
+    response = (puts pre + "Verb:" + verb
+    puts "Path:" + path
+    puts "Protocol:" + protocol + pre)
+    output  = response
     headers = ["http/1.1 200 ok",
       "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
       "server: ruby",
@@ -50,7 +55,6 @@ end
 
 
 
-# verb, path, protocol = request_lines.first.split(" ")
 # if path.scan("?").any?
 #   path, params = path.split("?")
 #   response = "<pre>" + "verb: " + verb + " params: " + params + " path: " + path + " protocol: " + protocol + "\n\n"+ request_lines.join("\n") + "</pre>"
