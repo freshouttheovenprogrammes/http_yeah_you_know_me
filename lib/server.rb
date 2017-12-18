@@ -13,13 +13,11 @@ class Server
   end
 
   def connect
-    until request_controller.close_server
-    end
+    request_controller.open_server
   end
 
 =begin
 loop do
-  puts cycles # was a variable now moved to request_controller
   client = tcp_server.accept # stored in the open_server method on request_controller
   puts "Ready for a request"
   request_lines = []
