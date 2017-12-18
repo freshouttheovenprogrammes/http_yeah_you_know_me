@@ -21,17 +21,24 @@ class RequestController
     while line = @client.gets and !line.chomp.empty?
       @request_lines << line.chomp
     end
-    verb, path, protocol = @request_lines.first.split(" ")
     pre = "<pre>"
     pre_close = "</pre>"
-    response = pre + "Verb: " + verb + " Path: " + path +
-    " Protocol: " + protocol + pre_close
-    output = "<html><head></head><body>#{response}</body></html>"
+    verb, comma, protocol = @request_lines[0].split(" ")
+    host, ip, port = @request_lines[1].split(":")
+    response = "#{pre}
+    Verb: #{verb}
+    Path: #{comma}
+    Protocol: #{protocol}
+    Host: #{host}
+    Port: #{port}
+    #{pre_close}"
+    response_2 = pre + " IP: " + ip + " Port: " + port + pre_close
+    output = "<html><head></head><body>#{response}#{response_2}</body></html>"
     text.headers(output)
     text.got_request
     text.ready_request
     @client.puts text.headers(output)
-    @client.puts output
+    @client.puts output # this is needed...why?
     puts "Sending response."
       @cycles += 1
       @client.close
