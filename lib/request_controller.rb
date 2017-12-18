@@ -17,30 +17,30 @@ class RequestController
   def open_server
     loop do
     @client = server.accept
+    @request_lines = []
+    while line = @client.gets and !line.chomp.empty?
+      @request_lines << line.chomp
+    end
+    verb, path, protocol = @request_lines.first.split(" ")
     pre = "<pre>"
-    text.headers
+    pre_close = "</pre>"
+    response = pre + "Verb: " + verb + " Path: " + path +
+    " Protocol: " + protocol + pre_close
+    output = "<html><head></head><body>#{response}</body></html>"
+    text.headers(output)
     text.got_request
     text.ready_request
-    request_lines = []
-    while line = @client.gets and !line.chomp.empty?
-      request_lines << line.chomp
-    end
-    verb, path, protocol = request_lines.first.split(" ")
-    response = (puts pre + "Verb:" + verb + "Path:" + path
-    puts "Protocol:" + protocol + pre)
-    output = "<html><head></head><body>#{response}</body></html>"
-    headers = ["http/1.1 200 ok",
-      "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
-      "server: ruby",
-      "content-type: text/html; charset=iso-8859-1",
-      "content-length: #{output.length}\r\n\r\n"].join("\r\n")
-    @client.puts headers
+    @client.puts text.headers(output)
     @client.puts output
     puts "Sending response."
       @cycles += 1
       @client.close
     end
   end
+  #
+  # def formatter(lines)
+  #   lines.map do |line|
+  # end
   #
   # def close_server
   #   server.close
