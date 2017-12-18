@@ -1,38 +1,41 @@
 require_relative 'text'
 
 class RequestController
-  attr_reader :tcp_server,
+  attr_reader :server,
+              :text,
               :cycles,
-              :close_server,
-              :text
+              :close_server
 
   def initialize
-    @tcp_server   = TCPServer.new(9292)
+    @server       = TCPServer.new(9292)
     @text         = Text.new
     @cycles       = 0
     @close_server = false
   end
 
 
-
   def open_server
     loop do
-    @client = tcp_server.accept
+    @client = server.accept
     pre = "<pre>"
     text.headers
     text.got_request
-    request_lines = []
-      while line = @client.gets and !line.chomp.empty?
-        request_lines << line.chomp
-      end
     text.ready_request
+    request_lines = []
+    while line = @client.gets and !line.chomp.empty?
+      request_lines << line.chomp
+    end
     verb, path, protocol = request_lines.first.split(" ")
-    response = (puts pre + "Verb:" + verb
-    puts "Path:" + path
+    response = (puts pre + "Verb:" + verb + "Path:" + path
     puts "Protocol:" + protocol + pre)
     output = "<html><head></head><body>#{response}</body></html>"
+    headers = ["http/1.1 200 ok",
+      "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
+      "server: ruby",
+      "content-type: text/html; charset=iso-8859-1",
+      "content-length: #{output.length}\r\n\r\n"].join("\r\n")
+    @client.puts headers
     @client.puts output
-    @client.puts response
     puts "Sending response."
       @cycles += 1
       @client.close
@@ -40,7 +43,7 @@ class RequestController
   end
   #
   # def close_server
-  #   tcp_server.close
+  #   server.close
   # end
 
 end
