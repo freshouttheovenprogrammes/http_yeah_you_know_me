@@ -13,7 +13,7 @@ class Server
   end
 
   def connect
-    request_controller.open_server
+    @request_controller.open_server
   end
 
 =begin
@@ -54,3 +54,6 @@ loop do
   end
 =end
 end
+
+server = Server.new
+server.open_server
