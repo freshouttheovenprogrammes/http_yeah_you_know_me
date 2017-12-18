@@ -11,9 +11,9 @@ class RequestController
 
   def open_server
     loop do
+    @client = tcp_server.accept
     puts "Ready for a request"
     request_lines = []
-    @client = tcp_server.accept
       while line = @client.gets and !line.chomp.empty?
         request_lines << line.chomp
       end
@@ -29,15 +29,16 @@ class RequestController
     @client.puts headers
     @client.puts output
     puts "Sending response."
-    # verb, path, protocol = request_lines.first.split(" ")
-      # if path.scan("?").any?
-      #   path, params = path.split("?")
-      #   response = "<pre>" + "verb: " + verb + " params: " + params + " path: " + path + " protocol: " + protocol + "\n\n"+ request_lines.join("\n") + "</pre>"
-      # else
-      #   response = "<pre>" + "verb: " + verb + " path: " + path + " protocol: " + protocol + "\n\n"+ request_lines.join("\n") + "</pre>"
-      # end
-      @client.close_server = true
+    verb, path, protocol = request_lines.first.split(" ")
+      if path.scan("?").any?
+        path, params = path.split("?")
+        response = "<pre>" + "verb: " + verb + " params: " + params + " path: " + path + " protocol: " + protocol + "\n\n"+ request_lines.join("\n") + "</pre>"
+      else
+        response = "<pre>" + "verb: " + verb + " path: " + path + " protocol: " + protocol + "\n\n"+ request_lines.join("\n") + "</pre>"
+      end
+      @cycles += 1
     end
+    @client.close_server = true
   end
 
   def close_server
