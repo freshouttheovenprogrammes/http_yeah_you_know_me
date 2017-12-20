@@ -1,8 +1,0 @@
-If they request /datetime
-respond with today’s date and time in this format:
-                                            11:07AM on Sunday, November 1, 2015.
-
-
-
-["Mon", "18", "Dec", "2017", "15:48:54", "-0700"]
-   0     1     2      3       4             5

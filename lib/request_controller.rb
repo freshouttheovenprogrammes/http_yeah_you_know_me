@@ -1,6 +1,9 @@
 require_relative 'text'
+require 'time'
+require 'date'
 
 class RequestController
+  include Text
   attr_reader :server,
               :text,
               :cycles,
@@ -10,7 +13,7 @@ class RequestController
 
   def initialize
     @server        = TCPServer.new(9292)
-    @text          = Text.new
+    # @text          = Text.new
     @cycles        = 0
     @close_server  = false
     @request_lines = []
@@ -24,6 +27,7 @@ class RequestController
 
   def open_server
     loop do
+    @cycles += 1
     while line = @client.gets and !line.chomp.empty?
       request_lines << line.chomp
     end
@@ -46,67 +50,17 @@ class RequestController
       elsif path == "/hello"
         output = "<html><head></head><body>Hello World(#{cycles})</body></html>"
       elsif path == "/datetime"
-        require "pry"; binding.pry
         output = "<html><head></head><body>#{time}</body></html>"
+      elsif path == "/shutdown"
+        output = "<html><head></head><body>Total Requests: #{cycles}</body></html>"
+        @server.close
       end
     text.headers(output)
     text.got_request
     text.ready_request
     @client.puts text.headers(output)
-    @client.puts output # this is needed...why?
+    @client.puts output
     puts "Sending response."
-      @cycles += 1
     end
   end
-  #
-  # def root
-  #   if something == "/"
-  #     do a thing
-  #   end
-  # end
-  #
-  # def root
-  #   if something == "/"
-  #     do a thing
-  #   end
-  # end
-  #
-  # def root
-  #   if something == "/"
-  #     do a thing
-  #   end
-  # end
-  #
-  # def root
-  #   if something == "/"
-  #     do a thing
-  #   end
-  # end
-  #
-  # def formatter(lines)
-  #   lines.map do |line|
-  # end
-  #
-  # def close_server
-  #   server.close
-  # end
-
 end
-
-
-
-
-
-
-
-
-
-
-
-
-# if path.scan("?").any?
-#   path, params = path.split("?")
-#   response = "<pre>" + "verb: " + verb + " params: " + params + " path: " + path + " protocol: " + protocol + "\n\n"+ request_lines.join("\n") + "</pre>"
-# else
-#   response = "<pre>" + "verb: " + verb + " path: " + path + " protocol: " + protocol + "\n\n"+ request_lines.join("\n") + "</pre>"
-# end
