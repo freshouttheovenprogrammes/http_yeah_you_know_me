@@ -1,5 +1,4 @@
 require_relative 'text'
-require 'time'
 require 'date'
 
 class RequestController
@@ -12,19 +11,18 @@ class RequestController
 
   def initialize
     @server        = TCPServer.new(9292)
-    # @text          = Text.new
     @cycles        = 0
     @close_server  = false
-    @request_lines = []
   end
 
   def time
-    time = Time.now.strftime('%a, %e %b %Y %H:%M:%S %z').delete(",").split(" ")
-    puts "#{time[4]}" + " on " "#{time[0]}" + "day " + "#{time[2]}" + "ember " + "#{time[1]} " + "#{time[3]}"
+    d = DateTime.now
+    "#{d.strftime('%H:%M%p on %A, %B %d, %Y')}"
   end
 
   def open_server
     loop do
+    request_lines = []
     client = @server.accept
     @cycles += 1
     puts "Ready for a request"
@@ -34,7 +32,6 @@ class RequestController
     pre = "<pre>"
     pre_close = "</pre>"
     verb, path, protocol = request_lines[0].split(" ")
-    require "pry"; binding.pry
     host, ip, port = request_lines[1].split(":")
     accept = request_lines[6]
     response = "#{pre}
@@ -58,7 +55,6 @@ class RequestController
         @server.close
       end
     puts "Got this request:"
-    # text.ready_request
     headers = ["http/1.1 200 ok",
       "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
       "server: ruby",
