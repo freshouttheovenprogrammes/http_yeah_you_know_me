@@ -3,13 +3,12 @@ require 'time'
 require 'date'
 
 class RequestController
-  include Text
+  # include Text
   attr_reader :server,
               :text,
               :cycles,
               :close_server,
-              :request_lines,
-              :client
+              :request_lines
 
   def initialize
     @server        = TCPServer.new(9292)
@@ -17,7 +16,6 @@ class RequestController
     @cycles        = 0
     @close_server  = false
     @request_lines = []
-    @client        = server.accept
   end
 
   def time
@@ -27,13 +25,16 @@ class RequestController
 
   def open_server
     loop do
+    client = @server.accept
     @cycles += 1
-    while line = @client.gets and !line.chomp.empty?
+    puts "Ready for a request"
+    while line = client.gets and !line.chomp.empty?
       request_lines << line.chomp
     end
     pre = "<pre>"
     pre_close = "</pre>"
     verb, path, protocol = request_lines[0].split(" ")
+    require "pry"; binding.pry
     host, ip, port = request_lines[1].split(":")
     accept = request_lines[6]
     response = "#{pre}
@@ -45,22 +46,28 @@ class RequestController
     Origin: #{ip}
     #{accept}
     #{pre_close}"
+    @output = ""
       if path == ""
-        output = "<html><head></head><body>#{response}</body></html>"
+        @output = "<html><head></head><body>#{response}</body></html>"
       elsif path == "/hello"
-        output = "<html><head></head><body>Hello World(#{cycles})</body></html>"
+        @output = "<html><head></head><body>Hello World(#{cycles})</body></html>"
       elsif path == "/datetime"
-        output = "<html><head></head><body>#{time}</body></html>"
+        @output = "<html><head></head><body>#{time}</body></html>"
       elsif path == "/shutdown"
-        output = "<html><head></head><body>Total Requests: #{cycles}</body></html>"
+        @output = "<html><head></head><body>Total Requests: #{cycles}</body></html>"
         @server.close
       end
-    text.headers(output)
-    text.got_request
-    text.ready_request
-    @client.puts text.headers(output)
-    @client.puts output
+    puts "Got this request:"
+    # text.ready_request
+    headers = ["http/1.1 200 ok",
+      "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
+      "server: ruby",
+      "content-type: text/html; charset=iso-8859-1",
+      "content-length: #{@output.length}\r\n\r\n"].join("\r\n")
+    client.puts headers
+    client.puts @output
     puts "Sending response."
+        # @server.close
     end
   end
 end
