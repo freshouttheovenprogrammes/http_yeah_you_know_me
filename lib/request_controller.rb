@@ -44,7 +44,7 @@ class RequestController
     #{accept}
     #{pre_close}"
     @output = ""
-      if path == ""
+      if path == "/"
         @output = "<html><head></head><body>#{response}</body></html>"
       elsif path == "/hello"
         @output = "<html><head></head><body>Hello World(#{cycles})</body></html>"
