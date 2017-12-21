@@ -41,10 +41,18 @@ class RequestControllerTest < Minitest::Test
     assert_equal 1, server.request_cycles
   end
 
-  def test_
+   def test_that_attributes_default_correctly
+    rq = RequestController.new
 
+    assert_instance_of Array, rq.request
+    assert_equal 0, rq.request_cycles
+    assert_equal 0, rq.hello_cycles
   end
 
+  def test_that_request_cycle_increases_upon_opening
+    open_server = Faraday.get "http://127.0.0.1:9292/"
+    require "pry"; binding.pry
+    assert_equal expected, open_server
   def test_
 
   end

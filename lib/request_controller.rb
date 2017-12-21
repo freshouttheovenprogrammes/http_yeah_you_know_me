@@ -12,19 +12,19 @@ class RequestController
 
   def initialize
     @server         = TCPServer.new(9292)
-    @request        = []
+    @request        = [] # this isn't always an array, could I go w/o?
     @request_cycles = 0
     @hello_cycles   = 0
     @close_server   = false # not really using...should I?
   end
 
   def open_server
-  loop do
-    @client = @server.accept
-    @request_cycles += 1
-    puts "Ready for a request"
-    path_finder
-    puts "Got this request:"
+    loop do
+      @client = @server.accept
+      @request_cycles += 1
+      puts "Ready for a request"
+      path_finder
+      puts "Got this request:"
       @client.puts headers + @output
       puts "Sending response."
     end
@@ -54,18 +54,16 @@ class RequestController
 
   def get_request
     if @request.path == "/" || @request.path == ""
-      @output = "<html><head></head><body>#{diagnostics(request)}</body></html>"
+      diagnostics_method(request)
     elsif @request.path == "/hello"
-      @output = "<html><head></head><body>#{hello}</body></html>"
+      hello_method
     elsif @request.path == "/datetime"
-      @output = "<html><head></head><body>#{datetime}</body></html>"
+      datetime_method
     elsif @request.path == "/word_search"
       word = @request.value
-      @output = "<html><head></head><body>#{word_search(word)}</body></html>"
-    elsif @request.path == "/game"
-      @output = "<html><head></head><body>You have taken #{game.guess_count} guesses and you most recent guess of #{game.recent_guess} was #{game.check}</body></html>"
+      word_search_method(word)
     elsif @request.path == "/shutdown"
-      @output = "<html><head></head><body>Total Requests: #{@request_cycles}</body></html>"
+      shutdown_method
       @server.close
     end
   end
@@ -79,8 +77,8 @@ class RequestController
     end
   end
 
-  def diagnostics(request)
-    "<pre>
+  def diagnostics_method(request)
+    @output = "<pre>
     Verb: #{@request.verb}
     Path: #{@request.path}
     Protocol: #{@request.protocol}
@@ -91,27 +89,27 @@ class RequestController
     </pre>"
   end
 
-  def hello
+  def hello_method
     @hello_cycles += 1
-    "Hello World(#{hello_cycles})"
+    @output = "Hello World(#{hello_cycles})"
   end
 
-  def datetime
+  def datetime_method
     d = DateTime.now
     "#{d.strftime('%H:%M%p on %A, %B %d, %Y')}"
   end
 
-  def word_search(word)
-    dic = File.read('/usr/share/dict/words')
-    if dic.include?(word.downcase)
-      "#{word.upcase} is a known word"
+  def word_search_method(word)
+    dictionary = File.read('/usr/share/dict/words')
+    if dictionary.include?(word.downcase)
+      @output = "#{word.upcase} is a known word"
     else
-      "#{word.upcase} is not a known word"
+      @output =  "#{word.upcase} is not a known word"
     end
   end
 
-  def shutdown
-
+  def shutdown_method
+    @output = "Total Requests: #{@request_cycles}"
   end
 
 end
