@@ -1,21 +1,81 @@
-require_relative 'text'
+require_relative 'request'
 require 'date'
 
 class RequestController
-  # include Text
   attr_reader :server,
-              :text,
-              :cycles,
-              :close_server,
-              :request_lines
+              :request,
+              :request_cycles,
+              :hello_cycles,
+              :close_server
 
   def initialize
-    @server        = TCPServer.new(9292)
-    @cycles        = 0
-    @close_server  = false
+    @server         = TCPServer.new(9292)
+    @request        = []
+    @request_cycles = 0
+    @hello_cycles   = 0
+    @close_server   = false
   end
 
-  def time
+  def open_server
+  loop do
+    @client = @server.accept
+    @request_cycles += 1
+    puts "Ready for a request"
+    path_finder
+    puts "Got this request:"
+      @client.puts headers
+      @client.puts @output
+      puts "Sending response."
+    end
+  end
+
+  def headers
+    ["http/1.1 200 ok",
+      "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
+      "server: ruby",
+      "content-type: text/html; charset=iso-8859-1",
+      "content-length: #{@output.length}\r\n\r\n"].join("\r\n")
+  end
+
+  def path_finder
+    @request_line = []
+    while line = @client.gets and !line.chomp.empty?
+      @request_line << line.chomp
+    end
+    @request = Request.new(@request_line)
+    @output = ""
+      if @request.path == "/" || @request.path == ""
+        @output = "<html><head></head><body>#{diagnostics(request)}</body></html>"
+      elsif @request.path == "/hello"
+        @output = "<html><head></head><body>#{hello}</body></html>"
+      elsif @request.path == "/datetime"
+        @output = "<html><head></head><body>#{datetime}</body></html>"
+      elsif @request.path == "/wordsearch"
+        @output = "<html><head></head><body>#{wordsearch(word)}</body></html>"
+      elsif @request.path == "/shutdown"
+        @output = "<html><head></head><body>Total Requests: #{@request_cycles}</body></html>"
+        @server.close
+      end
+  end
+
+  def diagnostics(request)
+    "<pre>
+    Verb: #{@request.verb}
+    Path: #{@request.path}
+    Protocol: #{@request.protocol}
+    #{@request.host}: #{@request.ip}
+    Port: #{@request.port}
+    Origin: #{@request.ip}
+    #{@request.accept}
+    </pre>"
+  end
+
+  def hello
+    @hello_cycles += 1
+    "Hello World(#{hello_cycles})"
+  end
+
+  def datetime
     d = DateTime.now
     "#{d.strftime('%H:%M%p on %A, %B %d, %Y')}"
   end
@@ -25,54 +85,8 @@ class RequestController
     search.word_parse(word)
   end
 
-  def open_server
-    loop do
-    request_lines = []
-    client = @server.accept
-    @cycles += 1
-    puts "Ready for a request"
-    while line = client.gets and !line.chomp.empty?
-      request_lines << line.chomp
-      require "pry"; binding.pry
-    end
-    pre = "<pre>"
-    pre_close = "</pre>"
-    verb, path, protocol = request_lines[0].split(" ")
-    host, ip, port = request_lines[1].split(":")
-    accept = request_lines[6]
-    word = request_lines[x]
-    response = "#{pre}
-    Verb: #{verb}
-    Path: #{path}
-    Protocol: #{protocol}
-    #{host}: #{ip}
-    Port: #{port}
-    Origin: #{ip}
-    #{accept}
-    #{pre_close}"
-    @output = ""
-      if path == "/"
-        @output = "<html><head></head><body>#{response}</body></html>"
-      elsif path == "/hello"
-        @output = "<html><head></head><body>Hello World(#{cycles})</body></html>"
-      elsif path == "/datetime"
-        @output = "<html><head></head><body>#{time}</body></html>"
-      elsif path == "/wordsearch"
-        @output = "<html><head></head><body>#{wordsearch(word)}</body></html>"
-      elsif path == "/shutdown"
-        @output = "<html><head></head><body>Total Requests: #{cycles}</body></html>"
-        @server.close
-      end
-    puts "Got this request:"
-    headers = ["http/1.1 200 ok",
-      "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
-      "server: ruby",
-      "content-type: text/html; charset=iso-8859-1",
-      "content-length: #{@output.length}\r\n\r\n"].join("\r\n")
-    client.puts headers
-    client.puts @output
-    puts "Sending response."
-        # @server.close
-    end
+  def shutdown
+
   end
+
 end

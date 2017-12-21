@@ -9,7 +9,7 @@ Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0
 </pre>
 
 
-["GET / HTTP/1.1", 0 
+["GET / HTTP/1.1", 0
  "Host: 127.0.0.1:9292",
  "Connection: keep-alive",
  "Cache-Control: no-cache",
@@ -18,3 +18,10 @@ Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0
  "Accept: */*",
  "Accept-Encoding: gzip, deflate, br",
  "Accept-Language: en-US,en;q=0.9"]
+
+
+ # headers = ["http/1.1 200 ok",
+ #   "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
+ #   "server: ruby",
+ #   "content-type: text/html; charset=iso-8859-1",
+ #   "content-length: #{@output.length}\r\n\r\n"].join("\r\n")
