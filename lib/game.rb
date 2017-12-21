@@ -9,6 +9,10 @@ class Game
     @recent_guess = recent_guess
   end
 
+  def start_game
+    "Good luck!"
+  end
+
   def guess(user_guess)
     @recent_guess = user_guess
   end

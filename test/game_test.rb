@@ -35,4 +35,10 @@ class GameTest < Minitest::Test
     assert_equal 2, game.guess_count
   end
 
+  def test_start_game_response
+    game = Game.new
+
+    assert_equal "Good luck!", game.start_game
+  end
+
 end
