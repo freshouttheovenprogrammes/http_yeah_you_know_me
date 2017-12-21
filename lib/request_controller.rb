@@ -1,4 +1,5 @@
 require_relative 'request'
+require_relative 'word_search' # not using right now
 require 'date'
 
 class RequestController
@@ -6,14 +7,14 @@ class RequestController
               :request,
               :request_cycles,
               :hello_cycles,
-              :close_server
+              :close_server # not really using...should I?
 
   def initialize
     @server         = TCPServer.new(9292)
     @request        = []
     @request_cycles = 0
     @hello_cycles   = 0
-    @close_server   = false
+    @close_server   = false # not really using...should I?
   end
 
   def open_server
@@ -50,8 +51,10 @@ class RequestController
         @output = "<html><head></head><body>#{hello}</body></html>"
       elsif @request.path == "/datetime"
         @output = "<html><head></head><body>#{datetime}</body></html>"
-      elsif @request.path == "/wordsearch"
-        @output = "<html><head></head><body>#{wordsearch(word)}</body></html>"
+      elsif @request.path == "/word_search"
+        require "pry"; binding.pry
+        word = @request.value
+        @output = "<html><head></head><body>#{word_search(word)}</body></html>"
       elsif @request.path == "/shutdown"
         @output = "<html><head></head><body>Total Requests: #{@request_cycles}</body></html>"
         @server.close
@@ -80,9 +83,13 @@ class RequestController
     "#{d.strftime('%H:%M%p on %A, %B %d, %Y')}"
   end
 
-  def wordsearch(word)
-    search = WordSearch.new
-    search.word_parse(word)
+  def word_search(word)
+    dic = File.read('/usr/share/dict/words')
+      if dic.include?(word.downcase)
+        "#{word.upcase} is a known word"
+      else
+        "#{word.upcase} is not a known word"
+      end
   end
 
   def shutdown
@@ -90,3 +97,5 @@ class RequestController
   end
 
 end
+
+# TODO why the hell doesn't the dictionary thing return anything what so ever?
