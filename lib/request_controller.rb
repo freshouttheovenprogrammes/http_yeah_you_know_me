@@ -1,5 +1,6 @@
 require_relative 'request'
 require_relative 'word_search' # not using right now
+require_relative 'game'
 require 'date'
 
 class RequestController
@@ -44,6 +45,14 @@ class RequestController
     end
     @request = Request.new(@request_line)
     @output = ""
+      if @request.verb == "GET"
+        get_request
+      elsif @request.verb == "POST"
+        post_request
+      end
+  end
+
+  def get_request
     if @request.path == "/" || @request.path == ""
       diagnostics_method(request)
     elsif @request.path == "/hello"
@@ -56,6 +65,15 @@ class RequestController
     elsif @request.path == "/shutdown"
       shutdown_method
       @server.close
+    end
+  end
+
+  def post_request(request)
+    if @request.path == "/start_game"
+      @output = "<html><head></head><body>Good luck!</body></html>"
+      game = Game.new
+      game.start
+    elsif @request.path == "/game"
     end
   end
 

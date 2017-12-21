@@ -1,3 +1,34 @@
+Game Stuff
+
+The game will work like this:
+
+When a player starts a new game, the server picks a random number between 0 and
+100.
+The player can make a new guess by sending a POST request containing the number
+they want to guess.
+When the player requests the game path, the server should show some information
+about the game including how many guesses have been made, what the most recent
+guess was, and whether it was too high, too low, or correct.
+
+
+
+
+The HTTP endpoints to support this game will look like this:
+
+POST to /start_game
+This request begins a game. The response says Good luck! and starts a game.
+
+GET to /game
+A request to this verb/path combo tells us:
+
+a) how many guesses have been taken.
+b) if a guess has been made, it tells what the guess was and whether it was too
+high, too low, or correct
+
+POST to /game
+This is how we make a guess. The request includes a parameter named guess.
+The server stores the guess and sends the user a redirect response, causing the
+client to make a GET to /game.
 <pre>
 Verb: POST
 Path: /
