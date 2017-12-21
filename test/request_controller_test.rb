@@ -3,18 +3,7 @@ require_relative 'test_helper'
 class RequestControllerTest < Minitest::Test
 
   ROOT_RESPONSE = "<pre>\n    Verb: GET\n    Path: /\n    Protocol: HTTP/1.1\n    User-Agent:  Faraday v0.13.1\n    Port: \n    Origin:  Faraday v0.13.1\n    \n    </pre>"
-  HELLO_RESPONSE =  "<html><head></head><body>Hello World 1\n<pre>\n
-                     Verb: GET\n    Path: /hello\n    Protocol: HTTP/1.1\n
-                     Host:  Faraday v0.9.2\n    Port: \n    Origin:  Faraday v0.9.2\n
-                     Accept: */*\n   </pre></body></html>"
-  DATETIME =  "<html><head></head><body>#{Time.now.strftime("%l:%M%p on %A, %^B %-d, %Y ")}
-               \n<pre>\n    Verb: GET\n    Path: /datetime\n    Protocol: HTTP/1.1\n
-               Host:  Faraday v0.9.2\n    Port: \n    Origin:  Faraday v0.9.2\n
-               Accept: */*\n   </pre></body></html>"
-  SHUTDOWN = "<html><head></head><body>Total Requests: 3\n<pre>\n
-              Verb: GET\n    Path: /shutdown\n    Protocol: HTTP/1.1\n
-              Host:  Faraday v0.9.2\n    Port: \n    Origin:  Faraday v0.9.2\n
-              Accept: */*\n   </pre></body></html>"
+
 
   def test_root_response
     server = Faraday.get "http://127.0.0.1:9292/"
@@ -30,12 +19,23 @@ class RequestControllerTest < Minitest::Test
 
   def test_hello_path_change
     server = Faraday.get "http://127.0.0.1:9292/hello"
-    
+
     assert_equal "Hello World(1)", server.body
   end
 
-  def test_a
+  def test_datetime_path_change
+    server = Faraday.get "http://127.0.0.1:9292/datetime"
+    d = DateTime.now
+    expected = "#{d.strftime('%H:%M%p on %A, %B %d, %Y')}"
 
+    assert_equal expected, server.body
+  end
+
+  def test_word_search_method_working
+    server = Faraday.get "http://127.0.0.1:9292/word_search?word=chun"
+    expected = "CHUN is a known word"
+
+    assert_equal expected, server.body
   end
 
   def test_
