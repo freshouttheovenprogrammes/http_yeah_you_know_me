@@ -24,8 +24,7 @@ class RequestController
     puts "Ready for a request"
     path_finder
     puts "Got this request:"
-      @client.puts headers
-      @client.puts @output
+      @client.puts headers + @output
       puts "Sending response."
     end
   end
@@ -52,7 +51,6 @@ class RequestController
       elsif @request.path == "/datetime"
         @output = "<html><head></head><body>#{datetime}</body></html>"
       elsif @request.path == "/word_search"
-        require "pry"; binding.pry
         word = @request.value
         @output = "<html><head></head><body>#{word_search(word)}</body></html>"
       elsif @request.path == "/shutdown"
@@ -85,11 +83,13 @@ class RequestController
 
   def word_search(word)
     dic = File.read('/usr/share/dict/words')
-      if dic.include?(word.downcase)
-        "#{word.upcase} is a known word"
-      else
-        "#{word.upcase} is not a known word"
-      end
+    sentence = ""
+    if dic.include?(word.downcase)
+      sentence = "#{word.upcase} is a known word"
+    else
+      sentence = "#{word.upcase} is not a known word"
+    end
+    sentence
   end
 
   def shutdown

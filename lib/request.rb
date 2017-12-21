@@ -6,14 +6,13 @@ class Request
               :ip,
               :port,
               :accept,
-              :value,
-              :word
+              :value
 
   def initialize(request_line)
     @verb, @path, @protocol = request_line[0].split(" ")
     @host, @ip, @port = request_line[1].split(":")
     @accept = request_line[6]
-    @value  = @path.split("=")[1]
+    @path, @value  = path.split("?word=")#[1]
   end
 
 end
