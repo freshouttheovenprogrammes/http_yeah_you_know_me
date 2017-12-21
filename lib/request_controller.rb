@@ -83,13 +83,11 @@ class RequestController
 
   def word_search(word)
     dic = File.read('/usr/share/dict/words')
-    sentence = ""
     if dic.include?(word.downcase)
-      sentence = "#{word.upcase} is a known word"
+      "#{word.upcase} is a known word"
     else
-      sentence = "#{word.upcase} is not a known word"
+      "#{word.upcase} is not a known word"
     end
-    sentence
   end
 
   def shutdown
