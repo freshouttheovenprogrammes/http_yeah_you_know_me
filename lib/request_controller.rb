@@ -44,19 +44,31 @@ class RequestController
     end
     @request = Request.new(@request_line)
     @output = ""
-      if @request.path == "/" || @request.path == ""
-        @output = "<html><head></head><body>#{diagnostics(request)}</body></html>"
-      elsif @request.path == "/hello"
-        @output = "<html><head></head><body>#{hello}</body></html>"
-      elsif @request.path == "/datetime"
-        @output = "<html><head></head><body>#{datetime}</body></html>"
-      elsif @request.path == "/word_search"
-        word = @request.value
-        @output = "<html><head></head><body>#{word_search(word)}</body></html>"
-      elsif @request.path == "/shutdown"
-        @output = "<html><head></head><body>Total Requests: #{@request_cycles}</body></html>"
-        @server.close
+      if @request.verb == "GET"
+        get_request
+      elsif @request.verb == "POST"
+        post_request
       end
+  end
+
+  def get_request
+    if @request.path == "/" || @request.path == ""
+      @output = "<html><head></head><body>#{diagnostics(request)}</body></html>"
+    elsif @request.path == "/hello"
+      @output = "<html><head></head><body>#{hello}</body></html>"
+    elsif @request.path == "/datetime"
+      @output = "<html><head></head><body>#{datetime}</body></html>"
+    elsif @request.path == "/word_search"
+      word = @request.value
+      @output = "<html><head></head><body>#{word_search(word)}</body></html>"
+    elsif @request.path == "/shutdown"
+      @output = "<html><head></head><body>Total Requests: #{@request_cycles}</body></html>"
+      @server.close
+    end
+  end
+
+  def post_request(request)
+
   end
 
   def diagnostics(request)

@@ -12,7 +12,7 @@ class Request
     @verb, @path, @protocol = request_line[0].split(" ")
     @host, @ip, @port = request_line[1].split(":")
     @accept = request_line[6]
-    @path, @value  = path.split("?word=")#[1]
+    @path, @value  = path.split("?word=")
   end
 
 end
