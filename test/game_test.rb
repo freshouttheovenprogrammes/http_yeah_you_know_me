@@ -25,4 +25,14 @@ class GameTest < Minitest::Test
     assert_equal 67, game.recent_guess
   end
 
+  def test_recent_guess_count_is_accurate
+    game = Game.new
+    game.guess(88)
+    game.check(88)
+    game.guess(67)
+    game.check(67)
+
+    assert_equal 2, game.guess_count
+  end
+
 end
