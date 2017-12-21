@@ -11,7 +11,7 @@ class GameTest < Minitest::Test
 
   def test_answer_has_only_one_number
     game = Game.new
-
+    game.start_game
     assert_equal 1, game.answer.count
   end
 
@@ -36,6 +36,7 @@ class GameTest < Minitest::Test
   end
 
   def test_start_game_response
+    
     game = Game.new
 
     assert_equal "Good luck!", game.start_game

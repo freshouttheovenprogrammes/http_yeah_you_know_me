@@ -4,13 +4,19 @@ class Game
               :recent_guess
 
   def initialize
-    @answer = [*1..100].sample(1)
+    @answer = []
     @guess_count = 0
     @recent_guess = recent_guess
+    start_game
   end
 
   def start_game
-    "Good luck!"
+    answer_generator
+    return "Good luck!"
+  end
+
+  def answer_generator
+    @answer = [*1..100].sample(1)
   end
 
   def guess(user_guess)
@@ -20,11 +26,11 @@ class Game
   def check(user_guess)
     @guess_count += 1
     if guess(user_guess) > answer[0] # < must be a better way then just using [0]
-      "Too low!"
+      "too low!"
     elsif guess(user_guess) < answer[0] # < must be a better way then just using [0]
-      "Too high!"
+      "too high!"
     else
-      "Correct!"
+      "correct!"
     end
   end
 

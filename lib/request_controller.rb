@@ -62,7 +62,8 @@ class RequestController
     elsif @request.path == "/word_search"
       word = @request.value
       @output = "<html><head></head><body>#{word_search(word)}</body></html>"
-    elsif @request.path == "/"
+    elsif @request.path == "/game"
+      @output = "<html><head></head><body>You have taken #{game.guess_count} guesses and you most recent guess of #{game.recent_guess} was #{game.check}</body></html>"
     elsif @request.path == "/shutdown"
       @output = "<html><head></head><body>Total Requests: #{@request_cycles}</body></html>"
       @server.close
@@ -74,6 +75,8 @@ class RequestController
       @output = "<html><head></head><body>Good luck!</body></html>"
       game = Game.new
       game.start
+    elsif @request.path == "/game"
+    end
   end
 
   def diagnostics(request)
@@ -112,5 +115,3 @@ class RequestController
   end
 
 end
-
-# TODO why the hell doesn't the dictionary thing return anything what so ever?
