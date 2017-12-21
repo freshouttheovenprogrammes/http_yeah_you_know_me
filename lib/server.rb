@@ -15,4 +15,4 @@ class Server
 end
 
 server = Server.new
-server.open_server
+server.connect
