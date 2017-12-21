@@ -96,7 +96,7 @@ class RequestController
 
   def datetime_method
     d = DateTime.now
-    "#{d.strftime('%H:%M%p on %A, %B %d, %Y')}"
+    @output = "#{d.strftime('%H:%M%p on %A, %B %d, %Y')}"
   end
 
   def word_search_method(word)

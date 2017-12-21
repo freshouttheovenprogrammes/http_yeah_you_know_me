@@ -2,10 +2,7 @@ require_relative 'test_helper'
 
 class RequestControllerTest < Minitest::Test
 
-  ROOT_RESPONSE = "<html><head></head><body><pre>\n
-                    Verb: GET\n    Path: /\n    Protocol: HTTP/1.1\n
-                    Host:  Faraday v0.9.2\n    Port: \n    Origin:  Faraday v0.9.2\n
-                    Accept: */*\n   </pre></body></html>"
+  ROOT_RESPONSE = "<pre>\n    Verb: GET\n    Path: /\n    Protocol: HTTP/1.1\n    User-Agent:  Faraday v0.13.1\n    Port: \n    Origin:  Faraday v0.13.1\n    \n    </pre>"
   HELLO_RESPONSE =  "<html><head></head><body>Hello World 1\n<pre>\n
                      Verb: GET\n    Path: /hello\n    Protocol: HTTP/1.1\n
                      Host:  Faraday v0.9.2\n    Port: \n    Origin:  Faraday v0.9.2\n
@@ -18,15 +15,6 @@ class RequestControllerTest < Minitest::Test
               Verb: GET\n    Path: /shutdown\n    Protocol: HTTP/1.1\n
               Host:  Faraday v0.9.2\n    Port: \n    Origin:  Faraday v0.9.2\n
               Accept: */*\n   </pre></body></html>"
-  NEW_GAME = "<html><head></head><body>Good luck!</body></html>"
-  GAME_RESPONSE = "<html><head></head><body>you have made 0 guesses</body></html>"
-
-
-  def test_that_it_exists
-    rq = RequestController.new
-
-    assert_instance_of RequestController, rq
-  end
 
   def test_root_response
     server = Faraday.get "http://127.0.0.1:9292/"
@@ -34,25 +22,22 @@ class RequestControllerTest < Minitest::Test
     assert_equal ROOT_RESPONSE, server.body
   end
 
-  def test_that_request_cycle_increases_upon_opening
-    skip
+  def test_get_verb_response
     server = Faraday.get "http://127.0.0.1:9292/"
-    # how to i get access to RequestController w/o another instantiation??
-    assert_equal 1, server.request_cycles
+
+    assert_equal :get, server.env.method
   end
 
-   def test_that_attributes_default_correctly
-    rq = RequestController.new
-
-    assert_instance_of Array, rq.request
-    assert_equal 0, rq.request_cycles
-    assert_equal 0, rq.hello_cycles
+  def test_hello_path_change
+    server = Faraday.get "http://127.0.0.1:9292/hello"
+    
+    assert_equal "Hello World(1)", server.body
   end
 
-  def test_that_request_cycle_increases_upon_opening
-    open_server = Faraday.get "http://127.0.0.1:9292/"
-    require "pry"; binding.pry
-    assert_equal expected, open_server
+  def test_a
+
+  end
+
   def test_
 
   end
