@@ -11,7 +11,7 @@ class RequestController
 
   def initialize
     @server         = TCPServer.new(9292)
-    @request        = []
+    @request        = [] # this isn't always an array, could I go w/o?
     @request_cycles = 0
     @hello_cycles   = 0
     @close_server   = false # not really using...should I?
@@ -54,7 +54,7 @@ class RequestController
         word = @request.value
         @output = "<html><head></head><body>#{word_search(word)}</body></html>"
       elsif @request.path == "/shutdown"
-        @output = "<html><head></head><body>Total Requests: #{@request_cycles}</body></html>"
+        @output = "<html><head></head><body>#{shutdown}</body></html>"
         @server.close
       end
   end
@@ -91,7 +91,7 @@ class RequestController
   end
 
   def shutdown
-
+    "Total Requests: #{@request_cycles}"
   end
 
 end
