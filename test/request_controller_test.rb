@@ -32,10 +32,14 @@ class RequestControllerTest < Minitest::Test
   end
 
   def test_word_search_method_working
-    server = Faraday.get "http://127.0.0.1:9292/word_search?word=chun"
-    expected = "CHUN is a known word"
+    server_1 = Faraday.get "http://127.0.0.1:9292/word_search?word=chun"
+    require "pry"; binding.pry
+    server_2 = Faraday.get "http://127.0.0.1:9292/word_search?word=Wowisie"
+    expected_1 = "CHUN is a known word"
+    expected_2 = "WOWISIE is not a known word"
 
-    assert_equal expected, server.body
+    assert_equal expected_1, server_1.body
+    assert_equal expected_2, server_2.body
   end
 
   def test_

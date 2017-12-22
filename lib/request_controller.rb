@@ -7,15 +7,13 @@ class RequestController
   attr_reader :server,
               :request,
               :request_cycles,
-              :hello_cycles,
-              :close_server # not really using...should I?
+              :hello_cycles
 
   def initialize
     @server         = TCPServer.new(9292)
     @request        = [] # this isn't always an array, could I go w/o?
     @request_cycles = 0
     @hello_cycles   = 0
-    @close_server   = false # not really using...should I?
   end
 
   def open_server
@@ -44,7 +42,6 @@ class RequestController
       @request_line << line.chomp
     end
     @request = Request.new(@request_line)
-    @output = ""
       if @request.verb == "GET"
         get_request
       elsif @request.verb == "POST"
