@@ -60,4 +60,17 @@ class GameTest < Minitest::Test
     assert_equal "correct", game.check(95)
   end
 
+  def test_game_diagnostics
+    game = Game.new
+    game.answer << 5
+
+    game.guess(88)
+    game.check(88)
+    game.guess(8)
+    game.check(8)
+    game.guess(55)
+    game.check(55)
+
+    assert_equal "You have taken 3 guesses and your most recent guess was 55", game.game_diagnostics
+  end
 end

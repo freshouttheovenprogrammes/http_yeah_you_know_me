@@ -23,7 +23,7 @@ class Game
   end
 
   def game_diagnostics
-    "You have taken #{guess_count} guesses and your guess was #{check(user_guess)}"
+    "You have taken #{guess_count} guesses and your most recent guess was #{recent_guess}"
   end
 
   def check(user_guess)
