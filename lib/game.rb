@@ -23,20 +23,20 @@ class Game
   end
 
   def game_diagnostics
-    "You have taken #{guess_count} guesses and your guess was #{check(user_guess)}"
+    "You have taken #{guess_count} guesses and your most recent guess was #{recent_guess}"
   end
 
   def check(user_guess)
     @guess_count += 1
-    require "pry"; binding.pry
-    if recent_guess.nil?
-      return "nothing here"
-    elsif guess(user_guess) > answer[0]
-      "too low!"
+    if guess(user_guess) == answer[0]
+      return "correct"
     elsif guess(user_guess) < answer[0]
+      "too low!"
+    elsif guess(user_guess) > answer[0]
       "too high!"
     else
-      "correct!"
+      recent_guess.nil?
+      return "nothing here..."
     end
   end
 
