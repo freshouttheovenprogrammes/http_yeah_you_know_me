@@ -97,7 +97,7 @@ class RequestController
   def hello_method
     @hello_cycles ||= 0
     @hello_cycles += 1
-    @output = "Hello World(#{@hello_cycles})"
+    @output = "Hello World (#{@hello_cycles})"
   end
 
   def datetime_method
@@ -122,12 +122,4 @@ class RequestController
     @game = Game.new
     @game.start_game
   end
-  #
-  # def play_game_method
-  #   request = client.read(headers[:body_length].to_i)
-  #   game.guesses << request.gsub("\r\n", "").split("guess")[1][1..2].to_i
-  #
-  # end
-
-
 end
