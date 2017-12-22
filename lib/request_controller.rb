@@ -78,8 +78,7 @@ class RequestController
     if @request.path == "/start_game"
       start_game_method
       @output = "#{@game.start_game}"
-    elsif @request.path == "/game"
-
+    else @output = "500 This Server Sucks"
     end
   end
 
@@ -123,12 +122,12 @@ class RequestController
     @game = Game.new
     @game.start_game
   end
-
-  def play_game_method
-    request = client.read(headers[:body_length].to_i)
-    game.guesses << request.gsub("\r\n", "").split("guess")[1][1..2].to_i
-
-  end
+  # 
+  # def play_game_method
+  #   request = client.read(headers[:body_length].to_i)
+  #   game.guesses << request.gsub("\r\n", "").split("guess")[1][1..2].to_i
+  #
+  # end
 
 
 end
