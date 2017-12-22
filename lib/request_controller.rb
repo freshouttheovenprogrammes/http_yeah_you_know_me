@@ -78,7 +78,7 @@ class RequestController
     if @parser.path == "/start_game"
       start_game_method
       @output = "#{@game.start_game}"
-    else @output = "500 This Server Sucks"
+    else @output = "500 This Server Is Under Construction"
     end
   end
 

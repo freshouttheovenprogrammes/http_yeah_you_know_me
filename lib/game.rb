@@ -11,7 +11,7 @@ class Game
 
   def start_game
     answer_generator
-    return "Good luck!"
+    "Good luck!"
   end
 
   def answer_generator
@@ -39,5 +39,4 @@ class Game
       return "nothing here..."
     end
   end
-
 end
