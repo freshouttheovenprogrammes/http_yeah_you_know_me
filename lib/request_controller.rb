@@ -1,4 +1,5 @@
 require_relative 'request'
+require_relative 'word_search' # not using right now
 require_relative 'game'
 require 'date'
 
@@ -17,24 +18,24 @@ class RequestController
     @close_server   = false # not really using...should I?
   end
 
-  def headers
-    ["http/1.1 200 ok",
-      "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
-      "server: ruby",
-      "content-type: text/html; charset=iso-8859-1",
-      "content-length: #{@output.length}\r\n\r\n"].join("\r\n")
-  end
-
   def open_server
     loop do
       @client = @server.accept
       @request_cycles += 1
       puts "Ready for a request"
       path_finder
-      puts "Got this request:" # nothing output here
+      puts "Got this request:"
       @client.puts headers + @output
-      puts "Sending response." # still unclear on what "response" really is
+      puts "Sending response."
     end
+  end
+
+  def headers
+    ["http/1.1 200 ok",
+      "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
+      "server: ruby",
+      "content-type: text/html; charset=iso-8859-1",
+      "content-length: #{@output.length}\r\n\r\n"].join("\r\n")
   end
 
   def path_finder
