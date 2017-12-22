@@ -19,9 +19,12 @@ class RequestControllerTest < Minitest::Test
 
   def test_hello_path_change
     Faraday.get "http://127.0.0.1:9292/hello"
+    Faraday.get "http://127.0.0.1:9292/hello"
+    Faraday.get "http://127.0.0.1:9292/hello"
+    Faraday.get "http://127.0.0.1:9292/hello"
     server = Faraday.get "http://127.0.0.1:9292/hello"
 
-    assert_equal "Hello World(2)", server.body
+    assert_equal "Hello World(5)", server.body
   end
 
   def test_datetime_path_change
@@ -42,8 +45,17 @@ class RequestControllerTest < Minitest::Test
     assert_equal expected_2, server_2.body
   end
 
-  def test_
+  def test_game_post_method_working
+    server = Faraday.post "http://127.0.0.1:9292/start_game"
+    
+    assert_equal :post, server.env.method
+    assert_equal "Good luck!", server.body
+  end
 
+  def test_game_get_response_working
+    skip
+    server = Faraday.get "http://127.0.0.1:9292/game"
+    # require "pry"; binding.pry
   end
 
   def test_

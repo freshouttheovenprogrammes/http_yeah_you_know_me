@@ -64,7 +64,8 @@ class RequestController
       word = @request.value
       word_search_method(word)
     elsif @request.path == "/game"
-      @output = game.game_diagnostics
+      @game = Game.new
+      @output = @game.game_diagnostics
     elsif @request.path == "/shutdown"
       shutdown_method
       @server.close
@@ -73,10 +74,10 @@ class RequestController
     end
   end
 
-  def post_request(request)
+  def post_request
     if @request.path == "/start_game"
-      game_method
-      @output = "<html><head></head><body>#{game.start_game}</body></html>"
+      start_game_method
+      @output = "#{@game.start_game}"
     elsif @request.path == "/game"
 
     end
