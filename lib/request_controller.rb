@@ -1,5 +1,4 @@
 require_relative 'request'
-require_relative 'word_search' # not using right now
 require_relative 'game'
 require 'date'
 
@@ -10,7 +9,7 @@ class RequestController
 
   def initialize
     @server         = TCPServer.new(9292)
-    @request        = [] # this isn't always an array, could I go w/o?
+    @request        = []
     @request_cycles = 0
   end
 
@@ -18,14 +17,15 @@ class RequestController
     loop do
       @client = @server.accept
       @request_cycles += 1
-      puts "Ready for a request"
+      puts "Ready for a request\n\n"
       @request = parser
-      puts "Got this request:"
+      puts "\nGot this request:\n\n"
       puts @request.request_line
       path_finder
       @client.puts headers + @output
-      puts "Sending response."
+      puts "\nSending response.\n\n"
       puts headers
+      puts @output
     end
   end
 
@@ -63,18 +63,22 @@ class RequestController
     elsif @request.path == "/word_search"
       word = @request.value
       word_search_method(word)
+    elsif @request.path == "/game"
+      @output = game.game_diagnostics
     elsif @request.path == "/shutdown"
       shutdown_method
       @server.close
+    else
+      @output = "404 Not Found"
     end
   end
 
   def post_request(request)
     if @request.path == "/start_game"
-      @output = "<html><head></head><body>Good luck!</body></html>"
-      game = Game.new
-      game.start
+      game_method
+      @output = "<html><head></head><body>#{game.start_game}</body></html>"
     elsif @request.path == "/game"
+
     end
   end
 
@@ -113,5 +117,17 @@ class RequestController
   def shutdown_method
     @output = "Total Requests: #{@request_cycles}"
   end
+
+  def start_game_method
+    @game = Game.new
+    @game.start_game
+  end
+
+  def play_game_method
+    request = client.read(headers[:body_length].to_i)
+    game.guesses << request.gsub("\r\n", "").split("guess")[1][1..2].to_i
+
+  end
+
 
 end

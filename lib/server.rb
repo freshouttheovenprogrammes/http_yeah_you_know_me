@@ -6,7 +6,6 @@ class Server
 
   def initialize
     @request_controller = RequestController.new
-    connect
   end
 
   def connect

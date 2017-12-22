@@ -1,11 +1,13 @@
 require_relative 'test_helper'
 require './lib/server'
-require 'faraday'
 
 class ServerTest < Minitest::Test
 
-  def test_hello
+  def test_server_reaches_request_controller
+    server = Server.new
 
+    server.close
+    assert_instance_of RequestController, server.connect
   end
 
 end
