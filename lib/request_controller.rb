@@ -1,4 +1,4 @@
-require_relative 'request'
+require_relative 'parser'
 require_relative 'game'
 require 'date'
 
@@ -18,9 +18,9 @@ class RequestController
       @client = @server.accept
       @request_cycles += 1
       puts "Ready for a request\n\n"
-      @request = parser
+      @parser = parser
       puts "\nGot this request:\n\n"
-      puts @request.request_line
+      puts @parser.request_line
       path_finder
       @client.puts headers + @output
       puts "\nSending response.\n\n"
@@ -42,31 +42,31 @@ class RequestController
     while line = @client.gets and !line.chomp.empty?
       @request_line << line.chomp
     end
-    Request.new(@request_line)
+    Parser.new(@request_line)
   end
 
   def path_finder
-    if @request.verb == "GET"
+    if @parser.verb == "GET"
       get_request
-    elsif @request.verb == "POST"
+    elsif @parser.verb == "POST"
       post_request
     end
   end
 
   def get_request
-    if @request.path == "/" || @request.path == ""
+    if @parser.path == "/" || @parser.path == ""
       diagnostics_method(request)
-    elsif @request.path == "/hello"
+    elsif @parser.path == "/hello"
       hello_method
-    elsif @request.path == "/datetime"
+    elsif @parser.path == "/datetime"
       datetime_method
-    elsif @request.path == "/word_search"
-      word = @request.value
+    elsif @parser.path == "/word_search"
+      word = @parser.value
       word_search_method(word)
-    elsif @request.path == "/game"
+    elsif @parser.path == "/game"
       @game = Game.new
       @output = @game.game_diagnostics
-    elsif @request.path == "/shutdown"
+    elsif @parser.path == "/shutdown"
       shutdown_method
       @server.close
     else
@@ -75,7 +75,7 @@ class RequestController
   end
 
   def post_request
-    if @request.path == "/start_game"
+    if @parser.path == "/start_game"
       start_game_method
       @output = "#{@game.start_game}"
     else @output = "500 This Server Sucks"
@@ -84,13 +84,13 @@ class RequestController
 
   def diagnostics_method(request)
     @output = "<pre>
-    Verb: #{@request.verb}
-    Path: #{@request.path}
-    Protocol: #{@request.protocol}
-    #{@request.host}: #{@request.ip}
-    Port: #{@request.port}
-    Origin: #{@request.ip}
-    #{@request.accept}
+    Verb: #{@parser.verb}
+    Path: #{@parser.path}
+    Protocol: #{@parser.protocol}
+    #{@parser.host}: #{@parser.ip}
+    Port: #{@parser.port}
+    Origin: #{@parser.ip}
+    #{@parser.accept}
     </pre>"
   end
 
@@ -122,7 +122,7 @@ class RequestController
     @game = Game.new
     @game.start_game
   end
-  # 
+  #
   # def play_game_method
   #   request = client.read(headers[:body_length].to_i)
   #   game.guesses << request.gsub("\r\n", "").split("guess")[1][1..2].to_i
