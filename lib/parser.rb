@@ -7,12 +7,12 @@ attr_reader :request_line,
             :ip,
             :port,
             :accept,
-            :value
+            :value,
+            :cache
 
   def initialize(request_line)
     @request_line           = request_line
     @verb, @path, @protocol = request_line[0].split(" ")
-    require "pry"; binding.pry
     @host, @ip, @port       = request_line[1].split(":")
     @accept                 = request_line[6]
     @path, @value           = path.split("?word=")
