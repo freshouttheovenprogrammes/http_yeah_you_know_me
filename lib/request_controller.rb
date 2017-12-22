@@ -1,32 +1,31 @@
 require_relative 'request'
-require_relative 'word_search' # not using right now
 require_relative 'game'
 require 'date'
 
 class RequestController
   attr_reader :server,
               :request,
-              :request_cycles,
-              :hello_cycles,
-              :close_server # not really using...should I?
+              :request_cycles
 
   def initialize
     @server         = TCPServer.new(9292)
     @request        = []
     @request_cycles = 0
-    @hello_cycles   = 0
-    @close_server   = false # not really using...should I?
   end
 
   def open_server
-  loop do
-    @client = @server.accept
-    @request_cycles += 1
-    puts "Ready for a request"
-    path_finder
-    puts "Got this request:"
+    loop do
+      @client = @server.accept
+      @request_cycles += 1
+      puts "Ready for a request\n\n"
+      @request = parser
+      puts "\nGot this request:\n\n"
+      puts @request.request_line
+      path_finder
       @client.puts headers + @output
-      puts "Sending response."
+      puts "\nSending response.\n\n"
+      puts headers
+      puts @output
     end
   end
 
@@ -38,49 +37,53 @@ class RequestController
       "content-length: #{@output.length}\r\n\r\n"].join("\r\n")
   end
 
-  def path_finder
+  def parser
     @request_line = []
     while line = @client.gets and !line.chomp.empty?
       @request_line << line.chomp
     end
-    @request = Request.new(@request_line)
-    @output = ""
-      if @request.verb == "GET"
-        get_request
-      elsif @request.verb == "POST"
-        post_request
-      end
+    Request.new(@request_line)
+  end
+
+  def path_finder
+    if @request.verb == "GET"
+      get_request
+    elsif @request.verb == "POST"
+      post_request
+    end
   end
 
   def get_request
     if @request.path == "/" || @request.path == ""
-      @output = "<html><head></head><body>#{diagnostics(request)}</body></html>"
+      diagnostics_method(request)
     elsif @request.path == "/hello"
-      @output = "<html><head></head><body>#{hello}</body></html>"
+      hello_method
     elsif @request.path == "/datetime"
-      @output = "<html><head></head><body>#{datetime}</body></html>"
+      datetime_method
     elsif @request.path == "/word_search"
       word = @request.value
-      @output = "<html><head></head><body>#{word_search(word)}</body></html>"
+      word_search_method(word)
     elsif @request.path == "/game"
-      @output = "<html><head></head><body>You have taken #{game.guess_count} guesses and you most recent guess of #{game.recent_guess} was #{game.check}</body></html>"
+      @game = Game.new
+      @output = @game.game_diagnostics
     elsif @request.path == "/shutdown"
-      @output = "<html><head></head><body>Total Requests: #{@request_cycles}</body></html>"
+      shutdown_method
       @server.close
+    else
+      @output = "404 Not Found"
     end
   end
 
-  def post_request(request)
+  def post_request
     if @request.path == "/start_game"
-      @output = "<html><head></head><body>Good luck!</body></html>"
-      game = Game.new
-      game.start
-    elsif @request.path == "/game"
+      start_game_method
+      @output = "#{@game.start_game}"
+    else @output = "500 This Server Sucks"
     end
   end
 
-  def diagnostics(request)
-    "<pre>
+  def diagnostics_method(request)
+    @output = "<pre>
     Verb: #{@request.verb}
     Path: #{@request.path}
     Protocol: #{@request.protocol}
@@ -91,27 +94,40 @@ class RequestController
     </pre>"
   end
 
-  def hello
+  def hello_method
+    @hello_cycles ||= 0
     @hello_cycles += 1
-    "Hello World(#{hello_cycles})"
+    @output = "Hello World(#{@hello_cycles})"
   end
 
-  def datetime
+  def datetime_method
     d = DateTime.now
-    "#{d.strftime('%H:%M%p on %A, %B %d, %Y')}"
+    @output = "#{d.strftime('%H:%M%p on %A, %B %d, %Y')}"
   end
 
-  def word_search(word)
-    dic = File.read('/usr/share/dict/words')
-    if dic.include?(word.downcase)
-      "#{word.upcase} is a known word"
+  def word_search_method(word)
+    dictionary = File.read('/usr/share/dict/words')
+    if dictionary.include?(word.downcase)
+      @output = "#{word.upcase} is a known word"
     else
-      "#{word.upcase} is not a known word"
+      @output = "#{word.upcase} is not a known word"
     end
   end
 
-  def shutdown
-
+  def shutdown_method
+    @output = "Total Requests: #{@request_cycles}"
   end
+
+  def start_game_method
+    @game = Game.new
+    @game.start_game
+  end
+  # 
+  # def play_game_method
+  #   request = client.read(headers[:body_length].to_i)
+  #   game.guesses << request.gsub("\r\n", "").split("guess")[1][1..2].to_i
+  #
+  # end
+
 
 end

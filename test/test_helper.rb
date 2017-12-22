@@ -1,4 +1,6 @@
+require 'date'
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'faraday'
+require 'socket'
 require 'pry'
