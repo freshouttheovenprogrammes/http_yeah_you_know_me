@@ -7,7 +7,7 @@ class RequestControllerTest < Minitest::Test
 
   def test_root_response
     server = Faraday.get "http://127.0.0.1:9292/"
-
+      
     assert_equal ROOT_RESPONSE, server.body
   end
 
@@ -19,7 +19,7 @@ class RequestControllerTest < Minitest::Test
 
   def test_bad_address_gets_response
     server = Faraday.get "http://127.0.0.1:9292/hell"
-    
+
     assert_equal "404 Not Found", server.body
   end
 
@@ -57,31 +57,4 @@ class RequestControllerTest < Minitest::Test
     assert_equal :post, server.env.method
     assert_equal "Good luck!", server.body
   end
-
-  def test_game_get_response_working
-    skip
-    server = Faraday.get "http://127.0.0.1:9292/game"
-    # require "pry"; binding.pry
-  end
-
-  def test_
-
-  end
-
-  def test_
-
-  end
-
-  def test_
-
-  end
-
-  def test_
-
-  end
-
-  def test_
-
-  end
-
 end

@@ -122,12 +122,4 @@ class RequestController
     @game = Game.new
     @game.start_game
   end
-  #
-  # def play_game_method
-  #   request = client.read(headers[:body_length].to_i)
-  #   game.guesses << request.gsub("\r\n", "").split("guess")[1][1..2].to_i
-  #
-  # end
-
-
 end
