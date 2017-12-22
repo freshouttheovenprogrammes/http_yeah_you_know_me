@@ -18,9 +18,10 @@ class RequestControllerTest < Minitest::Test
   end
 
   def test_hello_path_change
+    Faraday.get "http://127.0.0.1:9292/hello"
     server = Faraday.get "http://127.0.0.1:9292/hello"
 
-    assert_equal "Hello World(1)", server.body
+    assert_equal "Hello World(2)", server.body
   end
 
   def test_datetime_path_change
@@ -33,7 +34,6 @@ class RequestControllerTest < Minitest::Test
 
   def test_word_search_method_working
     server_1 = Faraday.get "http://127.0.0.1:9292/word_search?word=chun"
-    require "pry"; binding.pry
     server_2 = Faraday.get "http://127.0.0.1:9292/word_search?word=Wowisie"
     expected_1 = "CHUN is a known word"
     expected_2 = "WOWISIE is not a known word"

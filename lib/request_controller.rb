@@ -6,14 +6,12 @@ require 'date'
 class RequestController
   attr_reader :server,
               :request,
-              :request_cycles,
-              :hello_cycles
+              :request_cycles
 
   def initialize
     @server         = TCPServer.new(9292)
     @request        = [] # this isn't always an array, could I go w/o?
     @request_cycles = 0
-    @hello_cycles   = 0
   end
 
   def open_server
@@ -21,10 +19,13 @@ class RequestController
       @client = @server.accept
       @request_cycles += 1
       puts "Ready for a request"
-      path_finder
+      @request = parser
       puts "Got this request:"
+      puts @request.request_line
+      path_finder
       @client.puts headers + @output
       puts "Sending response."
+      puts headers
     end
   end
 
@@ -36,17 +37,20 @@ class RequestController
       "content-length: #{@output.length}\r\n\r\n"].join("\r\n")
   end
 
-  def path_finder
+  def parser
     @request_line = []
     while line = @client.gets and !line.chomp.empty?
       @request_line << line.chomp
     end
-    @request = Request.new(@request_line)
-      if @request.verb == "GET"
-        get_request
-      elsif @request.verb == "POST"
-        post_request
-      end
+    Request.new(@request_line)
+  end
+
+  def path_finder
+    if @request.verb == "GET"
+      get_request
+    elsif @request.verb == "POST"
+      post_request
+    end
   end
 
   def get_request
@@ -87,8 +91,9 @@ class RequestController
   end
 
   def hello_method
+    @hello_cycles ||= 0
     @hello_cycles += 1
-    @output = "Hello World(#{hello_cycles})"
+    @output = "Hello World(#{@hello_cycles})"
   end
 
   def datetime_method
