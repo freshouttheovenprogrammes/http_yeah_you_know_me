@@ -7,7 +7,7 @@ class RequestControllerTest < Minitest::Test
 
   def test_root_response
     server = Faraday.get "http://127.0.0.1:9292/"
-      
+
     assert_equal ROOT_RESPONSE, server.body
   end
 
@@ -30,7 +30,7 @@ class RequestControllerTest < Minitest::Test
     Faraday.get "http://127.0.0.1:9292/hello"
     server = Faraday.get "http://127.0.0.1:9292/hello"
 
-    assert_equal "Hello World(5)", server.body
+    assert_equal "Hello World (5)", server.body
   end
 
   def test_datetime_path_change

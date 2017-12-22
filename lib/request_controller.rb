@@ -97,7 +97,7 @@ class RequestController
   def hello_method
     @hello_cycles ||= 0
     @hello_cycles += 1
-    @output = "Hello World(#{@hello_cycles})"
+    @output = "Hello World (#{@hello_cycles})"
   end
 
   def datetime_method
