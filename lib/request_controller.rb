@@ -111,7 +111,7 @@ class RequestController
     if dictionary.include?(word.downcase)
       @output = "#{word.upcase} is a known word"
     else
-      @output =  "#{word.upcase} is not a known word"
+      @output = "#{word.upcase} is not a known word"
     end
   end
 

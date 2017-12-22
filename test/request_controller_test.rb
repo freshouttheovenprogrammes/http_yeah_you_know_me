@@ -17,6 +17,12 @@ class RequestControllerTest < Minitest::Test
     assert_equal :get, server.env.method
   end
 
+  def test_bad_address_gets_response
+    server = Faraday.get "http://127.0.0.1:9292/hell"
+    
+    assert_equal "404 Not Found", server.body
+  end
+
   def test_hello_path_change
     Faraday.get "http://127.0.0.1:9292/hello"
     Faraday.get "http://127.0.0.1:9292/hello"
@@ -47,7 +53,7 @@ class RequestControllerTest < Minitest::Test
 
   def test_game_post_method_working
     server = Faraday.post "http://127.0.0.1:9292/start_game"
-    
+
     assert_equal :post, server.env.method
     assert_equal "Good luck!", server.body
   end
